@@ -18,6 +18,7 @@ class Marker:
         self.file = open('./mark.txt', 'a', encoding='utf-8')
         self.query = ''
         self.reply = ''
+        self.count = 0
 
     def save_reply(self, query, reply):
         self.query = query
@@ -25,7 +26,11 @@ class Marker:
 
     def mark(self):
         if (self.reply.strip() != ''):
-            self.file.write(self.query + '    :    ' + self.reply + "\n")
+            self.file.write(self.query + ' ---> ' + self.reply + "\n")
+            self.count += 1
+            if self.count > 10:
+                self.file.flush()
+                self.count = 0
             return '已标记，谢谢'
 
 marker = Marker()            
