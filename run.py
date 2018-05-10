@@ -31,7 +31,7 @@ class Marker:
             if self.count > 10:
                 self.file.flush()
                 self.count = 0
-            return '已标记，谢谢'
+            return 'marked!'
 
 marker = Marker()            
 
