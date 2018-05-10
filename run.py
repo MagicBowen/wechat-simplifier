@@ -23,7 +23,7 @@ class Marker:
 
     def mark(self):
         if (self.reply.strip() != ''):
-            self.file.write(self.reply)
+            self.file.write(self.reply + "\n")
             return '已标记，谢谢'
 
 marker = Marker()            
