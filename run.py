@@ -26,14 +26,14 @@ class Marker:
 
     def mark(self):
         if (self.reply.strip() != ''):
-            self.file.write(self.query + ' ---> ' + self.reply + "\n")
-            self.count += 1
+            self.file.write(self.query + ' ---> ' + self.reply + '\n')
+            self.count = self.count + 1
             if self.count > 10:
                 self.file.flush()
                 self.count = 0
             return 'marked!'
 
-marker = Marker()            
+marker = Marker()           
 
 #########################################################
 # for production environment
