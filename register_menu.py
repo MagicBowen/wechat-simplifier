@@ -6,9 +6,9 @@ import itchatmp
 menu = {
     "button":[
     {    
-        "type":"click",
-        "name":"纠正",
-        "key":"modify"
+        "type" : "click",
+        "name" : "mark",
+        "key"  : "modify"
     }
     ]
 }

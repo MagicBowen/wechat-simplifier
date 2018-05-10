@@ -3,7 +3,6 @@ import sys
 sys.path.append("lib/itchat")
 import itchatmp
 import json
-# import qrcode
 import time
 import logging
 import requests
@@ -12,6 +11,12 @@ from register_menu import register_menu
 
 #########################################################
 logger = logging.getLogger('wechat')
+
+#########################################################
+last_reply = ''
+
+mark_file = './marked_replies.txt'
+file = open(mark_file, 'a', encoding='utf-8')
 
 #########################################################
 # for production environment
@@ -40,15 +45,22 @@ def get_reply(query):
     except Exception as e:
         logger.error('requested chatbot exception: {0}!'.format(str(e)))
         return '升级维护中，请稍后再试...'
+
+#########################################################
+def send_reply(query):
+    rsp = get_reply(content)
+    print("response text: " + rsp)
+    last_reply = rsp
+    return rsp    
     
 #########################################################
 @itchatmp.msg_register(itchatmp.content.TEXT)
 def text_reply(msg):
     user_id = msg['FromUserName']
     content = msg['Content']
-    print("receive text: ${content}")
+    print("receive text: " + content)
     rsp = get_reply(content)
-    print("response text: ${rsp}")
+    print("response text: " + rsp)
     return rsp
 
 #########################################################
@@ -56,9 +68,24 @@ def text_reply(msg):
 def voice_reply(msg):
     user_id = msg['FromUserName']
     content = msg['Recognition']
+    print("receive voice: " + content)
     rsp = get_reply(content)
-    print("response text: ${rsp}")
+    print("response text: " + rsp)
     return rsp
 
-# register_menu()
+#########################################################
+@itchatmp.msg_register(itchatmp.content.EVENT)
+def subscribe_reply(msg):
+    user_id = msg['FromUserName']
+    if msg['Event'] == 'subscribe' :
+        print("receive event: subscribe")
+        return "欢迎加入小哒智能AI内测训练！"
+    elif msg['Event'] == 'CLICK' :
+        print("receive event: CLICK")
+        key = msg['EventKey']
+        if key == 'modify':
+            file.write(last_reply)
+            return '已记录'    
+
+register_menu()
 itchatmp.run(port=config.HTTP_PORT)    
