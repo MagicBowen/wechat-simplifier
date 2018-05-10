@@ -28,7 +28,7 @@ class Marker:
         if (self.reply.strip() != ''):
             self.file.write(self.query + ' ---> ' + self.reply + '\n')
             self.count = self.count + 1
-            if self.count > 10:
+            if self.count >= 5:
                 self.file.flush()
                 self.count = 0
             return 'marked!'
