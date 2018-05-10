@@ -16,14 +16,16 @@ logger = logging.getLogger('wechat')
 class Marker:
     def __init__(self):
         self.file = open('./marked_replies.txt', 'a', encoding='utf-8')
+        self.query = ''
         self.reply = ''
 
-    def save_reply(self, reply):
+    def save_reply(self, query, reply):
+        self.query = query
         self.reply = reply
 
     def mark(self):
         if (self.reply.strip() != ''):
-            self.file.write(self.reply + "\n")
+            self.file.write(self.query + '    :    ' + self.reply + "\n")
             return '已标记，谢谢'
 
 marker = Marker()            
@@ -54,7 +56,7 @@ def get_reply(query):
         if response.status_code != 200: 
             logger.error('requested chatbot failed, error code = {0}!'.format(response.status_code))
             return '升级维护中，请稍后再试...'
-        marker.save_reply(response.json()['y'])
+        marker.save_reply(query, response.json()['y'])
         return response.json()['y']
     except Exception as e:
         logger.error('requested chatbot exception: {0}!'.format(str(e)))
