@@ -33,7 +33,7 @@ def get_reply(query):
     if not query or query.strip() == '':
         return '对不起，不能发送空消息哦~'
 
-    if query == 'x' and last_reply.strip() != '':
+    if query == 'x' and not last_reply.strip() == '':
         file.write(last_reply)
         return '已标记，谢谢！'
 
