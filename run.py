@@ -13,10 +13,20 @@ from register_menu import register_menu
 logger = logging.getLogger('wechat')
 
 #########################################################
-last_reply = ''
+class Marker:
+    def __init__(self):
+        self.file = open('./marked_replies.txt', 'a', encoding='utf-8')
+        self.reply = ''
 
-mark_file = './marked_replies.txt'
-file = open(mark_file, 'a', encoding='utf-8')
+    def save_reply(self, reply):
+        self.reply = reply
+
+    def mark(self):
+        if (self.reply.strip() != ''):
+            self.file.write(self.reply)
+            return '已标记，谢谢'
+
+marker = Marker()            
 
 #########################################################
 # for production environment
@@ -33,9 +43,8 @@ def get_reply(query):
     if not query or query.strip() == '':
         return '对不起，不能发送空消息哦~'
 
-    if query == 'x' and not last_reply.strip() == '':
-        file.write(last_reply)
-        return '已标记，谢谢！'
+    if query == 'x':
+        return marker.mark()
 
     request_json = { "x": query } 
 
@@ -45,8 +54,8 @@ def get_reply(query):
         if response.status_code != 200: 
             logger.error('requested chatbot failed, error code = {0}!'.format(response.status_code))
             return '升级维护中，请稍后再试...'
-        last_reply = response.json()['y']
-        return last_reply
+        marker.save_reply(response.json()['y'])
+        return response.json()['y']
     except Exception as e:
         logger.error('requested chatbot exception: {0}!'.format(str(e)))
         return '升级维护中，请稍后再试...'
@@ -76,8 +85,7 @@ def subscribe_reply(msg):
         print("receive event: CLICK")
         key = msg['EventKey']
         if key == 'modify':
-            file.write(last_reply)
-            return '已记录'
+            return marker.mark()
 
 # register_menu()
 itchatmp.run(port=config.HTTP_PORT)
