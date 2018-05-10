@@ -15,7 +15,7 @@ logger = logging.getLogger('wechat')
 #########################################################
 class Marker:
     def __init__(self):
-        self.file = open('./marked_replies.txt', 'a', encoding='utf-8')
+        self.file = open('./mark.txt', 'a', encoding='utf-8')
         self.query = ''
         self.reply = ''
 
@@ -45,7 +45,7 @@ def get_reply(query):
     if not query or query.strip() == '':
         return '对不起，不能发送空消息哦~'
 
-    if query == 'x':
+    if query.strip() == 'x':
         return marker.mark()
 
     request_json = { "x": query } 
